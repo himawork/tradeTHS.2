@@ -6,10 +6,19 @@
     <description>Recent content in Reports on THS_2 Trading Reports</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 17 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 20 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/reports/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>THStradingReport</title>
+      <link>/2020/05/20/thstradingreport_2020-05-20/</link>
+      <pubDate>Wed, 20 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/05/20/thstradingreport_2020-05-20/</guid>
+      <description>Stock trading footsteps of 000016bandTest = bandCrotest(&amp;#39;000016&amp;#39;, K_type = &amp;#39;dailyK&amp;#39;)bandProfit(&amp;#39;000016&amp;#39;, bandRes = bandTest, plot = T)## Finally got 7 trading band: ## ## bandDate BS.Date buyN sellN profit## ----------- ----------- ----- ------ -------## 2020-04-09 2020-04-14 500 0 NA## 2020-04-09 2020-04-22 0 200 NA## 2020-04-09 2020-04-23 500 0 NA## 2020-04-09 2020-04-28 0 800 -279.9## 2020-04-16 2020-04-17 500 0 NA## 2020-04-16 2020-04-22 0 200 NA## 2020-04-16 2020-04-23 500 0 NA## 2020-04-16 2020-05-06 0 800 352.</description>
+    </item>
     
     <item>
       <title>HangQingMap</title>
