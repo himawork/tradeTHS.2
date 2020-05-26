@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>HTML on THS_2 Trading Reports</title>
-    <link>/categories/html/</link>
-    <description>Recent content in HTML on THS_2 Trading Reports</description>
+    <title>hold on THS_2 Trading Reports</title>
+    <link>/tags/hold/</link>
+    <description>Recent content in hold on THS_2 Trading Reports</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 27 May 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/html/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/hold/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -18,15 +18,6 @@
       
       <guid>/2020/05/27/ths2-grp_2020-05-27_hold/</guid>
       <description>Stock trading footsteps of 600410bandTest = bandCrotest(&amp;#39;600410&amp;#39;, bandFrom = 30, bandNum = 4)bandProfit(&amp;#39;600410&amp;#39;, bandRes = bandTest, plot = T, viewNum = 60)## Finally got 6 trading band: ## ## bandDate BS.Date buyN sellN price FinalHold money profit Hday Pro.day tags ## ----------- ----------- ----- ------ ------- ---------- -------- ------- ----- -------- --------## 2020-04-16 2020-04-17 200 0 12.230 200 47554.0 . .</description>
-    </item>
-    
-    <item>
-      <title>HangQingMap</title>
-      <link>/hangqing/hangqing/</link>
-      <pubDate>Sun, 17 May 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/hangqing/hangqing/</guid>
-      <description></description>
     </item>
     
   </channel>
