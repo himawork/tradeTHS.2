@@ -6,11 +6,7 @@
     <description>Recent content in Categories on THS_2 Trading Reports</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-<<<<<<< HEAD
     <lastBuildDate>Wed, 27 May 2020 00:00:00 +0000</lastBuildDate>
-=======
-    <lastBuildDate>Wed, 20 May 2020 00:00:00 +0000</lastBuildDate>
->>>>>>> ab360d255541d3e2d92cd687e9864180f8f683fb
     
 	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
@@ -18,11 +14,7 @@
     <item>
       <title>HTML</title>
       <link>/categories/html/</link>
-<<<<<<< HEAD
       <pubDate>Wed, 27 May 2020 00:00:00 +0000</pubDate>
-=======
-      <pubDate>Wed, 20 May 2020 00:00:00 +0000</pubDate>
->>>>>>> ab360d255541d3e2d92cd687e9864180f8f683fb
       
       <guid>/categories/html/</guid>
       <description></description>

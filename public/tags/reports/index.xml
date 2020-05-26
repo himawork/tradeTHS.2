@@ -6,31 +6,36 @@
     <description>Recent content in Reports on THS_2 Trading Reports</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-<<<<<<< HEAD
     <lastBuildDate>Wed, 27 May 2020 00:00:00 +0000</lastBuildDate>
-=======
-    <lastBuildDate>Wed, 20 May 2020 00:00:00 +0000</lastBuildDate>
->>>>>>> ab360d255541d3e2d92cd687e9864180f8f683fb
     
 	<atom:link href="/tags/reports/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-<<<<<<< HEAD
       <title>THS2-GRP_hold</title>
       <link>/2020/05/27/ths2-grp_2020-05-27_hold/</link>
       <pubDate>Wed, 27 May 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/05/27/ths2-grp_2020-05-27_hold/</guid>
       <description>Stock trading footsteps of 600410bandTest = bandCrotest(&amp;#39;600410&amp;#39;, bandFrom = 30, bandNum = 4)bandProfit(&amp;#39;600410&amp;#39;, bandRes = bandTest, plot = T, viewNum = 60)## Finally got 6 trading band: ## ## bandDate BS.Date buyN sellN price FinalHold money profit Hday Pro.day tags ## ----------- ----------- ----- ------ ------- ---------- -------- ------- ----- -------- --------## 2020-04-16 2020-04-17 200 0 12.230 200 47554.0 . .</description>
-=======
+    </item>
+    
+    <item>
+      <title>THS2-GRP_sting</title>
+      <link>/2020/05/27/ths2-grp_2020-05-27_sting/</link>
+      <pubDate>Wed, 27 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/05/27/ths2-grp_2020-05-27_sting/</guid>
+      <description>Just report front 10 stocks, un-reported were: 300797, 000603, 600476, 300541, 300566, 300232, 002119, 002953, 300381, 300796, 002268, 300183, 002868, 000712, 002036, 603688, 300428, 300627, 600373, 002389, 603619, 603995, 002903, 600410, 300480, 603507, 300467, 603727, 002045, 603848, 000038, 300809, 300648, 002655, 002524, 002474, 600647, 000998, 300489, 603037, 000887, 603536, 600131, 600037, 603839, 603718, 600305, 600359, 603268, 600137, 300503, 002840Stock trading footsteps of 600893bandTest = bandCrotest(&amp;#39;600893&amp;#39;, bandFrom = 30, bandNum = 4)bandProfit(&amp;#39;600893&amp;#39;, bandRes = bandTest, plot = T, viewNum = 60)## Finally got -1 trading band: ## ## ||## ||## ||## ||## Profit of 600893 was 0{&#34;</description>
+    </item>
+    
+    <item>
       <title>THStradingReport</title>
       <link>/2020/05/20/thstradingreport_2020-05-20/</link>
       <pubDate>Wed, 20 May 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/05/20/thstradingreport_2020-05-20/</guid>
       <description>Stock trading footsteps of 000016bandTest = bandCrotest(&amp;#39;000016&amp;#39;, K_type = &amp;#39;dailyK&amp;#39;)bandProfit(&amp;#39;000016&amp;#39;, bandRes = bandTest, plot = T)## Finally got 7 trading band: ## ## bandDate BS.Date buyN sellN profit## ----------- ----------- ----- ------ -------## 2020-04-09 2020-04-14 500 0 NA## 2020-04-09 2020-04-22 0 200 NA## 2020-04-09 2020-04-23 500 0 NA## 2020-04-09 2020-04-28 0 800 -279.9## 2020-04-16 2020-04-17 500 0 NA## 2020-04-16 2020-04-22 0 200 NA## 2020-04-16 2020-04-23 500 0 NA## 2020-04-16 2020-05-06 0 800 352.</description>
->>>>>>> ab360d255541d3e2d92cd687e9864180f8f683fb
     </item>
     
     <item>
