@@ -6,10 +6,28 @@
     <description>Recent content in HTML on THS_2 Trading Reports</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 27 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 28 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/html/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>THS2-GRP_hold</title>
+      <link>/2020/05/28/ths2-grp_2020-05-28_hold/</link>
+      <pubDate>Thu, 28 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/05/28/ths2-grp_2020-05-28_hold/</guid>
+      <description>Stock trading footsteps of 600410 [Top]bandTest = bandCrotest(&amp;#39;600410&amp;#39;, bandFrom = 30, bandNum = 4)bandProfit(&amp;#39;600410&amp;#39;, bandRes = bandTest, plot = T, viewNum = 60)## Finally got 6 trading band: ## ## bandDate BS.Date buyN sellN price FinalHold money profit Hday Pro.day tags ## ----------- ----------- ----- ------ ------- ---------- -------- ------- ----- -------- --------## 2020-04-16 2020-04-17 200 0 12.230 200 47554.0 .</description>
+    </item>
+    
+    <item>
+      <title>THS2-GRP_sting</title>
+      <link>/2020/05/28/ths2-grp_2020-05-28_sting/</link>
+      <pubDate>Thu, 28 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/05/28/ths2-grp_2020-05-28_sting/</guid>
+      <description>Just report front 10 stocks, un-reported were: 600476, 002045, 603848, 300566, 300232, 002953, 603032, 300688, 300381, 300809, 603959, 002268, 300183, 603315, 002524, 002868, 002036, 000998, 300489, 603825, 603037, 000887, 002389, 600131, 603995, 002601, 002903, 000831, 600037, 603839, 603718, 000856, 300330, 600359, 600742, 603268, 000913, 002142, 300503, 002840, 603289, 603856, 300046, 603558, 300541, 002119, 300796, 000712, 603688, 300428, 300627, 600373, 603619, 600410, 300480, 000038, 300648, 002655, 002474, 600647, 603536, 600305, 600137Stock trading footsteps of 000016 [Top]bandTest = bandCrotest(&amp;#39;000016&amp;#39;, bandFrom = 30, bandNum = 4)bandProfit(&amp;#39;000016&amp;#39;, bandRes = bandTest, plot = T, viewNum = 60)## Finally got 9 trading band: ## ## bandDate BS.</description>
+    </item>
     
     <item>
       <title>THS2-GRP_hold</title>
