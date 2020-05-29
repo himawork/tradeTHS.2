@@ -6,10 +6,28 @@
     <description>Recent content in hold on THS_2 Trading Reports</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 28 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 30 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/hold/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>THS2-GRP_hold</title>
+      <link>/2020/05/30/ths2-grp_2020-05-30_hold/</link>
+      <pubDate>Sat, 30 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/05/30/ths2-grp_2020-05-30_hold/</guid>
+      <description>Stock trading footsteps of 600410 [Top]bandTest = bandSword(&amp;#39;600410&amp;#39;, bandFrom = 30, days = 10, ratio = 0.8)bandProfit(&amp;#39;600410&amp;#39;, bandRes = bandTest, plot = T, viewNum = 60, Proless = 300)## Finally got 4 trading band: ## Just show head 10 lines.## ## bandDate BS.Date buyN sellN price FinalHold money profit Hday Pro.day tags ## ----------- ----------- ----- ------ ------- ---------- -------- ------- ----- -------- --------## 2020-04-16 2020-04-17 200 0 12.</description>
+    </item>
+    
+    <item>
+      <title>THS2-GRP_hold</title>
+      <link>/2020/05/29/ths2-grp_2020-05-29_hold/</link>
+      <pubDate>Fri, 29 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/05/29/ths2-grp_2020-05-29_hold/</guid>
+      <description>Stock trading footsteps of 600410 [Top]bandTest = bandCrotest(&amp;#39;600410&amp;#39;, bandFrom = 30, bandNum = 4)bandProfit(&amp;#39;600410&amp;#39;, bandRes = bandTest, plot = T, viewNum = 60)## Finally got 4 trading band: ## ## bandDate BS.Date buyN sellN price FinalHold money profit Hday Pro.day tags ## ----------- ----------- ----- ------ ------- ---------- -------- ------- ----- -------- --------## 2020-04-20 2020-04-21 200 0 12.265 200 47547.0 .</description>
+    </item>
     
     <item>
       <title>THS2-GRP_hold</title>

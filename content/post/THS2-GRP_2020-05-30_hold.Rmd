@@ -1,0 +1,397 @@
+---
+title: THS2-GRP_hold
+author: Himawork
+date: '2020-05-30'
+slug: THS2-GRP_2020-05-30_hold
+categories:
+  - HTML
+tags:
+  - Reports
+  - Trade
+  - hold
+---
+
+```{r Load_Functions, echo=FALSE, warning=FALSE}
+# load packages and functions ----
+suppressMessages({library(rvest); library(recharts)})
+# sword to test stock value moving direction
+bandSword <- function(Scode, type = 'sting', days = 10, ratio = 0.8, bandFrom = 30) {
+  datK.old = readRDS('e:/tess/SpySto.RDS')[[type]][[Scode]][['dailyK']]
+    if (length(datK.old$Date) < bandFrom) {
+    print('bandFrom out of datK boundary, use default length of datK.')
+    bandFrom = length(datK.old$Date)
+  }
+  datK.old$sword = NA; bandRes = NULL
+  for (i in 1:length(datK.old$Date)) {
+    datK.old$sword[i] = (datK.old$OPEN[i] > datK.old$CLOSE[i] | datK.old$OPEN[i] <  datK.old$CLOSE[i + 1])
+  }
+  # 
+  for (b in bandFrom:1) {
+      NumCro = length(grep('TRUE',datK.old$sword[b:(b + days)])) >= ceiling(days * ratio) 
+      bandDate = datK.old$Date[b];
+    if (NumCro) {
+      bandTest = TRUE
+      Hvalue = datK.old$HIGH[which(datK.old[,'Date'] == bandDate)]
+      if (length(Hvalue) != 1) {Hvalue = max(datK.old$LOW[b:(b + days)])}
+      banddat = data.frame(Date = bandDate, Test = bandTest, NumCro = NumCro, High = Hvalue * 1.01)
+      bandRes = rbind.data.frame(bandRes, banddat)
+    } 
+  }
+  return(bandRes)
+}
+# plot K-kines
+SpyKplot = function(Scode = '', type = c('sting'), bandTestres = bandTest, viewNum = 30) {
+  BuyScodeNum = names(readRDS('e:/tess/SpySto.RDS')[[type]])
+  if (Scode %in% BuyScodeNum) {
+    dataK = readRDS('e:/tess/SpySto.RDS')[[type]][[Scode]][['dailyK']]
+    dataK = na.omit(dataK[duplicated(dataK$Date)==F,])
+    if (nrow(dataK) < viewNum) {
+      viewNum <- nrow(dataK)
+      cat(paste0('ViewNum out of boundary. Use default ',nrow(dataK), ' nrows of dataK.\n'))    }
+    # re-order date
+    dataK = dataK[1:viewNum,]
+    dataK = dataK[order(dataK$Date, decreasing = F),]
+    # K line
+    Kplot <-  echartr(dataK, as.character(Date), c('OPEN', 'CLOSE', 'LOW', 'HIGH'), type='k') %>%  
+      # set_grid(width = 800, height = 300,widget = 'pane') %>%
+      setXAxis(name='', axisLabel=list(rotate=45,textStyle=list(fontSize = 8.5))) %>%
+      set_theme(width = 960,height = 300) %>%  set_legend(show = F)%>% 
+      setYAxis(name="Price") %>% setToolbox(show = F,controls = c("dataZoom", "restore"), pos = 9)%>% 
+      setTitle(subtitle =  paste0('dailyK_plot of ', Scode), pos =12,
+               sublink = paste0("http://stockpage.10jqka.com.cn/", Scode)) %>%
+      setTooltip(show=T, bgColor = "rgba(0,0,0,0)", textStyle = list(fontSize=8.5, color = 'black')) %>% 
+      setDataZoom(fill=rgba(c(col2rgb('lightgreen'), 0.2)), handle=rgba(c(col2rgb('darkgreen'), 0.5)), range = c(50,100))
+    if (length(bandTestres) < 1) {
+      return(Kplot)
+    } else {
+      names(bandTestres) = c('xAxis','value','name','yAxis')
+      Kplot.1 <- Kplot %>% addMP(data = bandTestres,symbol = 'pin',symbolSize =3,effect = list(show = F,color='green'))
+      return(Kplot.1)
+    }
+  } else print(paste0(Scode,' is not in subdata of ',type))
+}
+# plot stock trading details
+StoQplot = function(Scode = '', type = c('sting'), plot = c('StoIO', 'StoVP'), viewNum = 30) {
+  BuyScodeNum = names(readRDS('e:/tess/SpySto.RDS')[[type]])
+  if (Scode %in% BuyScodeNum) {
+    Qplot.dat = readRDS('e:/tess/SpySto.RDS')[['sting']][[Scode]][['CStoDetail']]
+    if (nrow(Qplot.dat) < viewNum) {
+      viewNum <- nrow(Qplot.dat)
+      cat(paste0('ViewNum out of boundary. Use default ',nrow(Qplot.dat), ' nrows of Qplot data.\n'))    }
+    # re-order date 
+    Qplot.dat = Qplot.dat[1:viewNum,]
+    Qplot.dat = Qplot.dat[order(Qplot.dat$compTime, decreasing = F),]
+    if (plot == "StoIO") {
+      # stock in and out
+      Qplot.dat = na.omit(Qplot.dat[duplicated(Qplot.dat$compTime)==F,c(1,10:15)])
+      dat.melt = data.table::melt(Qplot.dat,id ='compTime',measure=c('StoIN.max','StoIN.mid','StoIN.min'))
+      dat.melt2 = data.table::melt(Qplot.dat,id ='compTime',measure=c('StoOUT.max','StoOUT.mid','StoOUT.min'))
+      dat.melt2$value = -dat.melt2$value # ; dat.melt$class = 'StoIN'; dat.melt2$class = 'StoOUT'
+      Qplot = echartr(rbind.data.frame(dat.melt, dat.melt2), as.character(compTime), value, variable, 
+                      type='area', subtype = 'stack') %>%
+        setTitle(subtitle = "Trading quantity: StoOUT vs. StoIN", pos = 12, 
+                 sublink = paste0("http://stockpage.10jqka.com.cn/", Scode)) %>%  
+        setXAxis(name = "", axisLabel = list(rotate = 30, textStyle=list(fontSize = 8.5))) %>% setYAxis(name = "万元") %>%  
+        setTooltip(show=T, trigger = 'axis', bgColor = "rgba(0,0,0,0)", textStyle = list(fontSize=9, color = 'black'), 
+                   formatter= '{b}<br/> {a}: {c} <br/> {a1}: {c1} <br/> {a2}: {c2} 
+                           <br/> {a3}: {c3} <br/> {a4}: {c4} <br/> {a5}: {c5} ') %>%
+        set_theme(width = 960,height = 480, theme = 'macarons') %>% 
+        setToolbox(show = T,controls = c("dataZoom", 'restore'), pos = 1) %>% 
+        setDataZoom(fill=rgba(c(col2rgb('lightgreen'), 0.2)), handle=rgba(c(col2rgb('darkgreen'), 0.5)), range = c(50,100))
+    } else if (plot == "StoVP") {
+      # gauge plot of stock trading change
+      Qplot.dat = na.omit(Qplot.dat[duplicated(Qplot.dat$compTime)==F,c(1,8,9)])
+      BD.dat = rbind.data.frame(data.frame(value = Qplot.dat[,2], class = 'Vib/%'),
+                                data.frame(value = Qplot.dat[,3], class = 'Tra/%'))
+      BD.dat$date = Qplot.dat$compTime; BD.dat$value = round(BD.dat$value, 2)
+      Qplot = echartr(BD.dat, as.character(date),value, class, type='area', subtype = 'stack') %>% 
+        setTitle(subtitle = "Vibration(%) & Trading(%)", pos = 12,
+                 sublink = paste0("http://stockpage.10jqka.com.cn/", Scode))  %>%  
+        setXAxis(name = "", axisLabel = list(rotate = 30, textStyle=list(fontSize = 9))) %>% setYAxis(name = "(%)") %>%  
+        setTooltip(show=T, trigger = 'axis', bgColor = "rgba(0,0,0,0)", textStyle = list(fontSize = 10, color = 'black'),
+                   formatter= '{b}<br/> {a}: {c} <br/> {a1}: {c1} ') %>%
+        set_theme(width = 960,height = 300, theme = 'macarons') %>% 
+        setToolbox(show = T,controls = c("dataZoom", 'restore'), pos = 1) %>% 
+        setDataZoom(fill=rgba(c(col2rgb('lightgreen'), 0.2)), handle=rgba(c(col2rgb('darkgreen'), 0.5)), range = c(50,100))
+    }
+    return(Qplot)
+  } else print(paste0(Scode,' is not in subdata of ',type))
+}
+# trade report plot
+tradePlot <- function(Scode) {
+  tradeRe = readRDS('e:/tess/tradeRe.RDS')
+  if (Scode %in% names(tradeRe)) {
+    Sto.dat = tradeRe[[Scode]]
+    Sto.dat[,c('buyN','sellN','holdN')] = Sto.dat[,c('buyN','sellN','holdN')] / (-100)
+    Sto.dat[,c('value','profit')] = Sto.dat[,c('value','profit')] / (1000)
+    Sto.dat = data.table::melt(Sto.dat,id ='date')
+    Sto.dat = Sto.dat[order(Sto.dat$date, decreasing = F),]
+    plot = echartr(Sto.dat, as.character(date), value, variable, type='area', subtype = 'stack') %>%
+      setTitle(subtitle = paste0("Trading Reports of ", Scode), pos = 12, 
+               sublink = paste0("http://stockpage.10jqka.com.cn/", Scode)) %>%  
+      setXAxis(name = "", axisLabel = list(rotate = 30, textStyle=list(fontSize = 9))) %>% 
+      setTooltip(show=T, trigger = 'axis', bgColor = "rgba(0,0,0,0)", textStyle = list(fontSize=9, color = 'black')) %>%
+      setDataZoom(fill=rgba(c(col2rgb('lightgreen'), 0.2)), handle=rgba(c(col2rgb('darkgreen'), 0.5))) %>% 
+      set_theme(width = 960,height = 480, theme = 'macarons') %>% 
+      setToolbox(show = T,controls = c("dataZoom", 'restore'), pos = 1) %>% 
+      set_legend(selected = c('buyN','sellN','holdN','price','cost'))
+    print("variables 'buyN','sellN','holdN' divide by -100; 'value','profit' divide by 1000.")
+    return(plot)
+  } else {cat(paste0('\nNo trade history of ', Scode,'\n'))}
+}
+# calculate profit
+bandProfit <- function(Scode, bandRes = '', MaxHoldDays = 30, plot = F, mn = 10, baseHold = 0, 
+                       Maxband = 1, viewNum = 30, Proless = 200) {
+  datK.old = na.omit(readRDS('e:/tess/SpySto.RDS')[['sting']][[Scode]][['dailyK']])
+  if (length(bandRes) < 1) {
+    print(paste0('No profit band of stock ',Scode))
+    if (plot) {
+      SpyKplot(Scode,type = 'sting',bandTestres = bandRes,viewNum = viewNum)}
+  } else {
+    bandRes$Date = as.character(bandRes$Date); profit = 0; MaxTestDays = Maxband * 5; 
+    Buydat = NULL;  BS.datT = NULL; 
+    BS.dat = data.frame(bandDate = 'd', BS.Date = 'BuyDate', buyN = 0, sellN = 0, price = 0, 
+                        FinalHold = 0, money = 0, profit = '.', Hday ='.', Pro.day = '.', tags = 'new')
+    for (d in bandRes$Date) {
+      FinalHold = 0; HoldStoNum = 0; money = 50000; 
+      for (m in 1:MaxTestDays) {
+        Sday = which(datK.old$Date==d) - m
+        Sday <- ifelse(length(Sday) ==1,Sday,0)
+        ## test buy env and buying new stocks
+        if (Sday > 1) {
+          Sdat = datK.old[c(Sday),]; Sdat$Date = as.character(Sdat$Date) 
+          # Sdat = datK.old[c(Sday,Sday+1),] # this Sdat get big profit
+          PriHigh = max(Sdat$HIGH) *.9 + min(Sdat$LOW) *.1; PriLow = max(Sdat$HIGH) *.1 + min(Sdat$LOW) *.9
+          Close = datK.old[Sday+1,'CLOSE']
+          # set buy condition
+          ChangeRateH = (PriHigh - Close)/Close * 100; ChangeRateL = (PriLow - Close)/Close * 100
+          sdJ1 = datK.old[Sday+1,'J'] - datK.old[Sday+2,'J'];sdJ2 = datK.old[Sday+2,'J'] - datK.old[Sday+3,'J']
+          sdJ1 = ifelse(!anyNA(sdJ1),sdJ1,0); sdJ2 = ifelse(!anyNA(sdJ2),sdJ2,0); 
+          # test buy in new stocks
+          if (sdJ1 > sdJ2 & FinalHold == 0 & Sdat$J < 90) { # & dayPriT 
+            # cat(paste0('bandWeek: ',d,'| Got true buy env of ', Scode,'\n\tBuyDay: ',Sdat$Date[1],'\n'))
+            if (ChangeRateL <= -8) {
+              # cat('\tBuying: ChangeRate <= -7 and AddholdNum = 1000\n')
+              HoldStoNum = 1000 + baseHold
+              money = money - PriLow * HoldStoNum
+            } else if (ChangeRateL <= -5 & ChangeRateL > -8) {
+              # cat('\tBuying: -3 <= ChangeRate < -7 and AddholdNum = 500\n')
+              HoldStoNum = 700 + baseHold
+              money = money - PriLow * HoldStoNum
+            } else if (ChangeRateL <= -2 & ChangeRateL > -5) {
+              # cat('\tBuying: -1 <= ChangeRate < -3 and AddholdNum = 200\n')
+              HoldStoNum = 500 + baseHold
+              money = money - PriLow * HoldStoNum
+            } else if (ChangeRateL <= 1 & ChangeRateL > -2) {
+              # cat('\tBuying: -1 <= ChangeRate < -3 and AddholdNum = 200\n')
+              HoldStoNum = 200 + baseHold
+              money = money - PriLow * HoldStoNum
+            } else if (PriLow < Close) {
+              # cat('\tBuying: PriLow < Close and AddholdNum = 500\n')
+              HoldStoNum = 300 + baseHold
+              money = money - PriLow * HoldStoNum
+            }
+            FinalHold = FinalHold + HoldStoNum
+          }
+          if (FinalHold > 0 & !Sdat$Date %in% BS.dat$BS.Date[which(BS.dat$bandDate != '.')]) {
+              BuyDate = Sdat$Date; Hvalue1 = Sdat$HIGH * 1.01; Lvalue1 = Sdat$LOW
+              BS.dat = data.frame(bandDate = d, BS.Date = BuyDate, buyN = FinalHold, sellN = 0, price = PriLow, 
+                                  FinalHold = FinalHold, money = money, profit = '.', 
+                                  Hday = '.', Pro.day = '.', tags = 'new')
+              break()
+          } else {
+            FinalHold = 0; money = 50000
+            break()
+            }
+          }
+        }
+      # test buy or sell after buying new stocks
+      for (b in 1:MaxHoldDays) {
+        ## set and test buy/sell condition in second day
+        Hday = Sday - b
+        if (Hday > 0 & FinalHold != 0) {
+          Hdat = datK.old[c(Hday),]; Hdat$Date = as.character(Hdat$Date) 
+          PriHigh = max(Hdat$HIGH) *.9 + min(Hdat$LOW) *.1; PriLow = max(Hdat$HIGH) *.1 + min(Hdat$LOW) *.9
+          Close = datK.old[Hday+1,'CLOSE']
+          # set buy condition
+          ChangeRateH = (PriHigh - Close)/Close * 100; ChangeRateL = (PriLow - Close)/Close * 100
+          sdJ1 = datK.old[Hday+1,'J'] - datK.old[Hday+2,'J'];sdJ2 = datK.old[Hday+2,'J'] - datK.old[Hday+3,'J']
+          sdJ1 = ifelse(!anyNA(sdJ1),sdJ1,0); sdJ2 = ifelse(!anyNA(sdJ2),sdJ2,0); 
+          # sword trade 
+          # swordTest = Sword(Scode, days = 7, ratio = 0.7) == 'UP'
+          # if (swordTest) {
+          #   # cat('\t|GoSell.1000 on day',Hdat$Date[1],'\n')
+          #   minusCount = ifelse(FinalHold > 1000, 1000, FinalHold - 100)
+          #   FinalHold = FinalHold - minusCount
+          #   money = money + PriHigh * minusCount
+          #   BS.dat.i = data.frame(bandDate = '.', BS.Date = Hdat$Date[1], buyN = 0, sellN = minusCount,  price = PriHigh, 
+          #                         FinalHold = FinalHold, money = money, profit='.',
+          #                         Hday ='.', Pro.day = '.', tags = 'minus')
+          #   BS.dat = rbind.data.frame(BS.dat, BS.dat.i)
+          # }
+          # test PriHigh and PriLow 
+          if (sdJ1 > sdJ2) {
+            # test to abort with limit profit before buy new
+            if (money + FinalHold * PriHigh - 50000 > Proless) {
+              # cat('\t|GoSell.all on day',Hdat$Date[1],'\n')
+              money = money + PriHigh * FinalHold; gain = round(money - 50000,2)
+              Hdays = as.numeric(as.Date(Hdat$Date[1]) - as.Date(BS.dat$BS.Date[1]))
+              BS.dat.i = data.frame(bandDate = '.', BS.Date = Hdat$Date[1], buyN = 0, sellN = FinalHold,  price = PriHigh, 
+                                    FinalHold = 0, money = money, profit = gain, 
+                                    Hday = Hdays, Pro.day = round(gain / Hdays, 2), tags = 'Pro.cls')
+              BS.dat = rbind.data.frame(BS.dat, BS.dat.i)
+              FinalHold = 0; break()
+            }
+            # test buy
+            # cat(paste0('\t|testBuyorSell...on day: ',Hdat$Date[1],'\n'))
+            if (ChangeRateL <= -8 & FinalHold != 0  & Hday > 1) {
+              # cat('\t|GoBuy.1000 on day',Hdat$Date[1],'\n')
+              FinalHold = FinalHold + 1000
+              money = money - PriLow * 1000
+              BS.dat.i = data.frame(bandDate = '.', BS.Date = Hdat$Date[1], buyN = 1000, sellN = 0,  price = PriLow, 
+                                    FinalHold = FinalHold, money = money, profit = '.', 
+                                    Hday = '.', Pro.day = '.', tags = 'plus')
+              BS.dat = rbind.data.frame(BS.dat, BS.dat.i)
+            } else if (ChangeRateL > -8 & ChangeRateL <= -6 & FinalHold != 0  & Hday > 1) {
+              # cat('\t|GoBuy.700 on day',Hdat$Date[1],'\n')
+              FinalHold = FinalHold + 700
+              money = money - PriLow * 700
+              BS.dat.i = data.frame(bandDate = '.', BS.Date = Hdat$Date[1], buyN = 700, sellN = 0,  price = PriLow, 
+                                    FinalHold = FinalHold, money = money, profit = '.', 
+                                    Hday = '.', Pro.day = '.', tags = 'plus')
+              BS.dat = rbind.data.frame(BS.dat, BS.dat.i)
+            } else if (ChangeRateL > -6 & ChangeRateL <= -4 & FinalHold != 0  & Hday > 1) {
+              # cat('\t|GoBuy.500 on day',Hdat$Date[1],'\n')
+              FinalHold = FinalHold + 500
+              money = money - PriLow * 500
+              BS.dat.i = data.frame(bandDate = '.', BS.Date = Hdat$Date[1], buyN = 500, sellN = 0,  price = PriLow, 
+                                    FinalHold = FinalHold, money = money, profit = '.', 
+                                    Hday = '.', Pro.day = '.', tags = 'plus')
+              BS.dat = rbind.data.frame(BS.dat, BS.dat.i)
+            } else if (ChangeRateL > -4 & ChangeRateL <= -2 & FinalHold != 0  & Hday > 1) {
+              # cat('\t|GoBuy.200 on day',Hdat$Date[1],'\n')
+              FinalHold = FinalHold + 200
+              money = money - PriLow * 200
+              BS.dat.i = data.frame(bandDate = '.', BS.Date = Hdat$Date[1], buyN = 200, sellN = 0,  price = PriLow, 
+                                    FinalHold = FinalHold, money = money, profit = '.', 
+                                    Hday = '.', Pro.day = '.', tags = 'plus')
+              BS.dat = rbind.data.frame(BS.dat, BS.dat.i)
+            } 
+            # test sell
+            if ((ChangeRateH >= 1 & ChangeRateH < 3) & FinalHold != 0) { # | dayPriT 
+              # cat('\t|GoSell.200 on day',Hdat$Date[1],'\n')
+              minusCount = ifelse(FinalHold > 200, 200, 0)
+              FinalHold = FinalHold - minusCount
+              money = money + PriHigh * minusCount
+              BS.dat.i = data.frame(bandDate = '.', BS.Date = Hdat$Date[1], buyN = 0, sellN = minusCount,  price = PriHigh, 
+                                    FinalHold = FinalHold, money = money, profit='.',
+                                    Hday ='.', Pro.day = '.', tags = 'minus')
+              BS.dat = rbind.data.frame(BS.dat, BS.dat.i)
+            } else if (ChangeRateH >= 3 & ChangeRateH < 5 & FinalHold != 0) {
+              # cat('\t|GoSell.500 on day',Hdat$Date[1],'\n')
+              minusCount = ifelse(FinalHold > 500, 500, FinalHold - 100)
+              FinalHold = FinalHold - minusCount
+              money = money + PriHigh * minusCount
+              BS.dat.i = data.frame(bandDate = '.', BS.Date = Hdat$Date[1], buyN = 0, sellN = minusCount,  price = PriHigh, 
+                                    FinalHold = FinalHold, money = money, profit='.',
+                                    Hday ='.', Pro.day = '.', tags = 'minus')
+              BS.dat = rbind.data.frame(BS.dat, BS.dat.i)
+            } else if (ChangeRateH >= 5 & ChangeRateH < 7 & FinalHold != 0) {
+              # cat('\t|GoSell.700 on day',Hdat$Date[1],'\n')
+              minusCount = ifelse(FinalHold > 700, 700, FinalHold - 100)
+              FinalHold = FinalHold - minusCount
+              money = money + PriHigh * minusCount
+              BS.dat.i = data.frame(bandDate = '.', BS.Date = Hdat$Date[1], buyN = 0, sellN = minusCount, price = PriHigh, 
+                                    FinalHold = FinalHold, money = money, profit='.',
+                                    Hday ='.', Pro.day = '.', tags = 'minus')
+              BS.dat = rbind.data.frame(BS.dat, BS.dat.i)
+            } else if (ChangeRateH >= 7 & FinalHold != 0) {
+              # cat('\t|GoSell.1000 on day',Hdat$Date[1],'\n')
+              minusCount = ifelse(FinalHold > 1000, 1000, FinalHold - 100)
+              FinalHold = FinalHold - minusCount
+              money = money + PriHigh * minusCount
+              BS.dat.i = data.frame(bandDate = '.', BS.Date = Hdat$Date[1], buyN = 0, sellN = minusCount,  price = PriHigh, 
+                                    FinalHold = FinalHold, money = money, profit='.',
+                                    Hday ='.', Pro.day = '.', tags = 'minus')
+              BS.dat = rbind.data.frame(BS.dat, BS.dat.i)
+            }
+          }
+        }
+      }
+      if (FinalHold > 0) {
+        money = money + PriHigh * FinalHold; gain = round(money - 50000,2)
+        Hdays = as.numeric(as.Date(Hdat$Date[1]) - as.Date(BS.dat$BS.Date[1]))
+        BS.dat.i = data.frame(bandDate = '.', BS.Date = Hdat$Date[1], buyN = 0, sellN = FinalHold,  price = PriHigh, 
+                              FinalHold = 0, money = money , profit = gain , 
+                              Hday = Hdays, Pro.day = round(gain / Hdays, 2), tags = 'End.cls')
+        BS.dat = rbind.data.frame(BS.dat, BS.dat.i)
+      }
+      if (money != 50000) {
+        # cat(paste0('\tFinal got money with ',money,' at bandWeek ',d,' on day of ',Hdat$Date[1],'\n\t',paste0(rep('-',73),collapse = ''),'\n'))
+        profit = profit + money - 50000
+        profit.i = money - 50000
+        SellDate = Hdat$Date[1]; Hvalue2 = Hdat$HIGH[1] * 1.02
+        Buydat.i <- data.frame(name1 = Lvalue1, xAxis1 = BuyDate, yAxis1 = Hvalue1,
+                               name2 = Hvalue2, xAxis2 = SellDate, yAxis2 = Hvalue2,value = profit.i)
+        
+        Buydat <- rbind.data.frame(Buydat, Buydat.i) # for animation mark lines 
+        #
+        BS.datT = rbind.data.frame(BS.datT, BS.dat)
+      }
+    }
+    #
+    cat(paste0('Finally got ',length(unique(BS.datT$bandDate)) - 1,' trading band: \n Just show head 10 lines.'))
+    print(knitr::kable(head(BS.datT)))
+    # total profit
+    cat(paste0('\tProfit of ',Scode,' was ', round(profit,2),'\n'))
+    # plot 
+    if (plot & length(Buydat) > 0) {
+      if (nrow(Buydat) > 1) {
+        for (n in 2:nrow(Buydat)) {
+          if (Buydat$xAxis1[n] == Buydat$xAxis1[n-1]) {
+            Buydat$yAxis1[n] = Buydat$yAxis1[n-1] * 1.01
+            Buydat$value[n] = Buydat$value[n] + Buydat$value[n-1]
+            Buydat$value[n-1] = NA
+          }
+        }
+      }
+      SpyKplot(Scode,type = 'sting',bandTestres = bandRes,viewNum = viewNum) %>%
+        addML(data = Buydat, symbolSize = c(1, 1), mode = 'override', 
+              effect = list(show = T,color = 'blue',loop = TRUE, period = 60, scaleSize = 1))
+    } else if (plot) {
+      SpyKplot(Scode,type = 'sting',bandTestres = bandRes,viewNum = viewNum)}
+  }
+}
+```
+
+## [Stock trading footsteps of 600410](http://stockpage.10jqka.com.cn/600410)   [[_Top_]](#)
+
+```{r, echo=TRUE, warning=FALSE}
+bandTest = bandSword('600410', bandFrom = 30, days = 10, ratio = 0.8)
+bandProfit('600410', bandRes = bandTest, plot = T, viewNum = 60, Proless = 300)
+StoQplot('600410', plot = c('StoIO'), viewNum = 60)
+StoQplot('600410', plot = c('StoVP'), viewNum = 60)
+tradePlot('600410')
+```
+
+## [Stock trading footsteps of 002552](http://stockpage.10jqka.com.cn/002552)   [[_Top_]](#)
+
+```{r, echo=TRUE, warning=FALSE}
+bandTest = bandSword('002552', bandFrom = 30, days = 10, ratio = 0.8)
+bandProfit('002552', bandRes = bandTest, plot = T, viewNum = 60, Proless = 300)
+StoQplot('002552', plot = c('StoIO'), viewNum = 60)
+StoQplot('002552', plot = c('StoVP'), viewNum = 60)
+tradePlot('002552')
+```
+
+## [Stock trading footsteps of 300046](http://stockpage.10jqka.com.cn/300046)   [[_Top_]](#)
+
+```{r, echo=TRUE, warning=FALSE}
+bandTest = bandSword('300046', bandFrom = 30, days = 10, ratio = 0.8)
+bandProfit('300046', bandRes = bandTest, plot = T, viewNum = 60, Proless = 300)
+StoQplot('300046', plot = c('StoIO'), viewNum = 60)
+StoQplot('300046', plot = c('StoVP'), viewNum = 60)
+tradePlot('300046')
+```
+
+Note: reports updated on 2020-05-30
